@@ -15,6 +15,22 @@ Once the image is uploaded to S3, you can tell Blitline what you want to have do
 
 ## Getting Started
 
-Requirements: Ruby 2.0+
+Requirements: Ruby 2.0+, bundler, rubygems
 
-Install: git clone 
+**Install:**
+
+- git clone https://github.com/blitline-dev/simple_blitline_example.git
+- cd simple_blitline_example
+- bundle install
+- ruby simple.rb
+
+This should start sinatra on port :4567, then just navigate to it in your browser
+
+http://0.0.0.0:4567
+
+Viola. You have all the code to upload an image and perform any amount of image processing you want on it.
+
+
+
+
+
