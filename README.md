@@ -22,6 +22,8 @@ Requirements: Ruby 2.0+, bundler, rubygems
 - git clone https://github.com/blitline-dev/simple_blitline_example.git
 - cd simple_blitline_example
 - bundle install
+- cp .env.sample .env
+- open .env and fill in the empty values (AWS Bucket, Keys, Blitline Info)
 - ruby simple.rb
 
 This should start sinatra on port :4567, then just navigate to it in your browser
