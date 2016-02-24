@@ -188,7 +188,7 @@ Blitline = function(debug) {
 				params = params+'&'+key+'='+encodeURIComponent(data[key]);
 			}
 			// Try XDR, or use the proxy
-			if (jQuery.browser.msie && window.XDomainRequest) {
+			if (navigator.userAgent.search("MSIE") >= 0 && window.XDomainRequest) {
 				// Use XDR
 				var xdr = new XDomainRequest();
 				xdr.open("post", url);

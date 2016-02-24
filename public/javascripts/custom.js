@@ -1,38 +1,12 @@
 // ----------------------------------
 // File Input Selector Code
 // ----------------------------------
-$(document).on('change', '.btn-file :file', function() {
-  var input = $(this),
-      numFiles = input.get(0).files ? input.get(0).files.length : 1,
-      label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-      input.trigger('fileselect', [numFiles, label]);
-});
 
 $(document).ready( function() {
-    $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
-        
-        var input = $(this).parents('.input-group').find(':text'),
-            log = numFiles > 1 ? numFiles + ' files selected' : label;
-        
-        if( input.length ) {
-            input.val(log);
-        } else {
-            if( log ) alert(log);
-        }
-    });
-
-    setFileUploadEvent();
-});
-
-
-// ----------------------------------
-// S3 Upload Code
-// ----------------------------------
-function setFileUploadEvent() {
-  $('form').fileupload({
+    var uploadStart = 0;
+    $('form').fileupload({
       forceIframeTransport: true,    // VERY IMPORTANT.  you will get 405 Method Not Allowed if you don't add this.
       add: function (event, data) {
-        alert("add " + data.inspect);
         $("#Content-Type").val(data.files[0].type);
         data.submit();
       },
@@ -41,27 +15,40 @@ function setFileUploadEvent() {
         // and the file will be directly uploaded there, via an iframe in the background.
         $('#loading').show();
         $('.processing').text("uploading image...");
+        uploadStart = new Date();
       },
       fail: function(e, data) {
         console.log(e, data, 'fail');
         console.log(data);
       },
       done: function (event, data) {
+        var completedDate = new Date();
+        var delta = (completedDate.getTime() - uploadStart.getTime()) / 1000;
 
-        //var blitlineJson = buildBlitlineJson();
-        //runBlitlineProcessing(blitlineJson);
+        $(".input-group").hide();
+        $("#original").show();
+        $("#blitlineProcessed").show();
+        $("#originalImage").attr("src", blitlineData.srcUrl);
+        $("#timeTaken").text(delta.toString() + " seconds to upload directly to S3");
+        
+        var blitlineJson = buildBlitlineJson();
+        console.log(blitlineJson);
+        runBlitlineProcessing(blitlineJson);
       }
     });
-}
+});
+
+
+// ----------------------------------
+// S3 Upload Code
+// ----------------------------------
 
 function runBlitlineProcessing(blitlineJson) {
   var blitlineEngine = new Blitline();
   console.log("submitting");
   // Add events for handling submitted and completed  
-  results = blitlineEngine.submit(blitlineJson, {
+  blitlineEngine.submit(blitlineJson, {
     completed : function(results, error) {
-      console.log("complete");
-      alert("Job completed:" + JSON.stringify(results));
       blitlineCompleted(results, error);
     },
     submitted : function(results, error) {
@@ -70,26 +57,35 @@ function runBlitlineProcessing(blitlineJson) {
       }
     }
   });
-  alert(results.toString());
   $('.processing').text("blitline processing image...");
 }
 
 function blitlineCompleted(results, error) {
-  alert("done");
-  alert(results.toString() + error.toString());
+  $('.processing').hide();
+  if (error) {
+    alert(error.toString());
+    return;
+  }
+
+  image = results[0].images[0];
+  $("#blitlineImage_1").attr("src", image.s3_url);
+  $("#blitlineImages").show();
 }
 
 function buildBlitlineJson() {
-  var blitlineInstance = getJsonInstance();
+  var blitlineInstance = getJsonInstance(blitlineData.newKey);
 
+  blitlineInstance.src = blitlineData.srcUrl;
   blitlineInstance.bucket = blitlineData.bucket;
   blitlineInstance.expires = blitlineData.expires;
-  blitlineInstance.keyTransform = blitlineData.keyTransform;
+  blitlineInstance.key_transform = blitlineData.keyTransform;
   blitlineInstance.signature = blitlineData.signature;
+  blitlineInstance.public_token = blitlineData.publicToken;
+
   return JSON.stringify(blitlineInstance);
 }
 
-function getJsonInstance() {
+function getJsonInstance(new_key) {
   var blitlineObject = {
     "src": "",
     "functions": [{
@@ -97,20 +93,17 @@ function getJsonInstance() {
       "params": {
         "text": "Blitline!"
       },
-      "save": {
-        "image_identifier": "watermark"
-      },
       "functions": [{
-        "name": "resize_to_fill",
+        "name": "resize_to_fit",
         "params": {
-          "width": 300,
-          "height": 150
+          "width": 140,
+          "height": 140
         },
         "save": {
           "image_identifier": "my_large_thumbnail",
           "s3_destination": {
-            "key": "",
-            "bucket": ""
+            "key": new_key,
+            "bucket": "bltemp"
           }
         }
       }]

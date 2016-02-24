@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
@@ -29,7 +29,9 @@
       blitlineData.publicToken = "<%= public_token %>";
       blitlineData.expires = "<%= expires %>";
       blitlineData.keyTransform = "<%= key_transform %>";
-      blitlineData.signature = "<%= signature %>";
+      blitlineData.signature = "<%= blitline_signature %>";
+      blitlineData.srcUrl = "http://<%= bucket %>.s3.amazonaws.com/<%= key %>"
+      blitlineData.newKey = "<%= blitline_key %>"
     </script>
   </head>
 
@@ -50,7 +52,9 @@
         <input type='hidden' name='success_action_status' value="200"/>
         <input type='hidden' name='policy' value="<%= policy %>"/>
         <input type='hidden' name='signature' value="<%= signature %>"/>
-        <input type='hidden' id='Content-Type' name='Content-Type' value="will_be_replaced_later"/>
+        <input type='hidden' name='Content-Type' id='Content-Type' value="will_be_replaced_later"/>
+
+
         <!-- end order is important -->
         <div>
           <div class="input-group">
@@ -59,7 +63,6 @@
                 <span class="icon-span-filestyle glyphicon glyphicon-folder-open"></span><span>&nbsp;&nbsp;Browse...</span><input type="file" id="file" name="file" >
               </span>
             </span>
-            <input type="text" class="form-control" readonly="">
           </div>
         </div>
       </form>
@@ -74,6 +77,25 @@
           </div>
         </div>
       </div>
+
+
+      <div id="original" style="display:none;">
+        <p class="bg-info">Image Uploaded to S3:</p>
+        <img id="originalImage" src="" style="max-width: 500px" class="img-thumbnail">
+        <div id="timeTaken"></div>
+        <br>
+      </div>
+
+      <div id="blitlineImages" style="display:none;">
+        <p class="bg-info">Blitline Processed Image:</p>
+        <img id="blitlineImage_1" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjwhLS0KU291cmNlIFVSTDogaG9sZGVyLmpzLzE0MHgxNDAKQ3JlYXRlZCB3aXRoIEhvbGRlci5qcyAyLjYuMC4KTGVhcm4gbW9yZSBhdCBodHRwOi8vaG9sZGVyanMuY29tCihjKSAyMDEyLTIwMTUgSXZhbiBNYWxvcGluc2t5IC0gaHR0cDovL2ltc2t5LmNvCi0tPjxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbI2hvbGRlcl8xNTMxNGExMGVmOSB0ZXh0IHsgZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQgfSBdXT48L3N0eWxlPjwvZGVmcz48ZyBpZD0iaG9sZGVyXzE1MzE0YTEwZWY5Ij48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ0LjA1NDY4NzUiIHk9Ijc0LjUiPjE0MHgxNDA8L3RleHQ+PC9nPjwvZz48L3N2Zz4=" />
+        <h6>Watermarked and Resized to Fit 140x140</h6>
+      </div>
+
+      <br>
+      <br>
+      <br>
+      <br>
     </div><!-- /.container -->
 
 
