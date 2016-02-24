@@ -61,14 +61,14 @@ function runBlitlineProcessing(blitlineJson) {
 }
 
 function blitlineCompleted(results, error) {
-  $('.processing').hide();
+  $('#loading').hide();
   if (error) {
     alert(error.toString());
     return;
   }
 
   image = results[0].images[0];
-  $("#blitlineImage_1").attr("src", image.s3_url);
+  $("#blitlineImage_1s").attr("src", image.s3_url);
   $("#blitlineImages").show();
 }
 
