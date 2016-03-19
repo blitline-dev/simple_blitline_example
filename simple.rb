@@ -4,6 +4,8 @@ require 'base64'
 require 'json'
 require 'digest/sha1'
 require 'oj'
+require 'dotenv'
+Dotenv.load
 
 get '/' do
   hex = SecureRandom.hex # Random name
