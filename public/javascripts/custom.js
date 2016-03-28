@@ -73,7 +73,7 @@ function blitlineCompleted(results, error) {
 }
 
 function buildBlitlineJson() {
-  var blitlineInstance = getJsonInstance(blitlineData.newKey);
+  var blitlineInstance = getJsonInstance(blitlineData.newKey, blitlineData.bucket);
 
   blitlineInstance.src = blitlineData.srcUrl;
   blitlineInstance.bucket = blitlineData.bucket;
@@ -85,7 +85,7 @@ function buildBlitlineJson() {
   return JSON.stringify(blitlineInstance);
 }
 
-function getJsonInstance(new_key) {
+function getJsonInstance(new_key, bucket) {
   var blitlineObject = {
     "src": "",
     "functions": [{
@@ -103,7 +103,7 @@ function getJsonInstance(new_key) {
           "image_identifier": "my_large_thumbnail",
           "s3_destination": {
             "key": new_key,
-            "bucket": "bltemp"
+            "bucket": bucket
           }
         }
       }]
