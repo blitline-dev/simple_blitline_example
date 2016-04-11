@@ -1,5 +1,6 @@
 Simple Blitline Example
 =======================
+
 This sample app demonstrates two cool features that you would probably want to do if you were building a website that handled uploading images and possibly processing those images.
 
 ##Step 1: Direct Upload to S3
